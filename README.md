@@ -1,4 +1,33 @@
+# 注意点
+项目必须放在纯英文目录下，也就是绝对路径不能有中文
 
+ 
+
+项目启动后，浏览器输入本地访问地址
+
+前台登录页面
+
+http://localhost:8080/lelenongchanpinxiaoshou/front/index.html
+
+ 
+
+后台登录页面
+
+http://localhost:8080/lelenongchanpinxiaoshou/admin/dist/index.html#/login
+
+管理员				账户:admin 		密码：admin
+
+商家				账户:a1 		密码：123456
+
+商家				账户:a2 		密码：123456
+
+商家				账户:a3 		密码：123456
+
+用户				账户:a1 		密码：123456
+
+用户				账户:a2 		密码：123456
+
+用户				账户:a3 		密码：123456
 
 # **摘  要**
 
