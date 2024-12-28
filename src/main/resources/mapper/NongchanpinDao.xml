@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.NongchanpinDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.shangjia_id as shangjiaId
+        ,a.nongchanpin_name as nongchanpinName
+        ,a.nongchanpin_photo as nongchanpinPhoto
+        ,a.nongchanpin_types as nongchanpinTypes
+        ,a.nongchanpin_kucun_number as nongchanpinKucunNumber
+        ,a.nongchanpin_old_money as nongchanpinOldMoney
+        ,a.nongchanpin_new_money as nongchanpinNewMoney
+        ,a.nongchanpin_clicknum as nongchanpinClicknum
+        ,a.nongchanpin_content as nongchanpinContent
+        ,a.shangxia_types as shangxiaTypes
+        ,a.nongchanpin_delete as nongchanpinDelete
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.NongchanpinView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+        ,shangjia.shangjia_name as shangjiaName
+        ,shangjia.shangjia_phone as shangjiaPhone
+        ,shangjia.shangjia_email as shangjiaEmail
+        ,shangjia.shangjia_photo as shangjiaPhoto
+        ,shangjia.shangjia_xingji_types as shangjiaXingjiTypes
+        ,shangjia.new_money as newMoney
+        ,shangjia.shangjia_content as shangjiaContent
+        ,shangjia.shangjia_delete as shangjiaDelete
+
+        FROM nongchanpin  a
+        left JOIN shangjia shangjia ON a.shangjia_id = shangjia.id
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test="params.shangjiaId != null and params.shangjiaId != ''">
+                and (
+                    a.shangjia_id = #{params.shangjiaId}
+                )
+            </if>
+            <if test=" params.nongchanpinName != '' and params.nongchanpinName != null and params.nongchanpinName != 'null' ">
+                and a.nongchanpin_name like CONCAT('%',#{params.nongchanpinName},'%')
+            </if>
+            <if test="params.nongchanpinTypes != null and params.nongchanpinTypes != ''">
+                and a.nongchanpin_types = #{params.nongchanpinTypes}
+            </if>
+            <if test="params.nongchanpinKucunNumberStart != null and params.nongchanpinKucunNumberStart != ''">
+                <![CDATA[  and a.nongchanpin_kucun_number >= #{params.nongchanpinKucunNumberStart}   ]]>
+            </if>
+            <if test="params.nongchanpinKucunNumberEnd != null and params.nongchanpinKucunNumberEnd != ''">
+                <![CDATA[  and a.nongchanpin_kucun_number <= #{params.nongchanpinKucunNumberEnd}   ]]>
+            </if>
+             <if test="params.nongchanpinKucunNumber != null and params.nongchanpinKucunNumber != ''">
+                and a.nongchanpin_kucun_number = #{params.nongchanpinKucunNumber}
+             </if>
+            <if test="params.nongchanpinOldMoneyStart != null ">
+                <![CDATA[  and a.nongchanpin_old_money >= #{params.nongchanpinOldMoneyStart}   ]]>
+            </if>
+            <if test="params.nongchanpinOldMoneyEnd != null ">
+                <![CDATA[  and a.nongchanpin_old_money <= #{params.nongchanpinOldMoneyEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinOldMoney != null and params.nongchanpinOldMoney != ''">
+                and a.nongchanpin_old_money = #{params.nongchanpinOldMoney}
+            </if>
+            <if test="params.nongchanpinNewMoneyStart != null ">
+                <![CDATA[  and a.nongchanpin_new_money >= #{params.nongchanpinNewMoneyStart}   ]]>
+            </if>
+            <if test="params.nongchanpinNewMoneyEnd != null ">
+                <![CDATA[  and a.nongchanpin_new_money <= #{params.nongchanpinNewMoneyEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinNewMoney != null and params.nongchanpinNewMoney != ''">
+                and a.nongchanpin_new_money = #{params.nongchanpinNewMoney}
+            </if>
+            <if test="params.nongchanpinClicknumStart != null and params.nongchanpinClicknumStart != ''">
+                <![CDATA[  and a.nongchanpin_clicknum >= #{params.nongchanpinClicknumStart}   ]]>
+            </if>
+            <if test="params.nongchanpinClicknumEnd != null and params.nongchanpinClicknumEnd != ''">
+                <![CDATA[  and a.nongchanpin_clicknum <= #{params.nongchanpinClicknumEnd}   ]]>
+            </if>
+             <if test="params.nongchanpinClicknum != null and params.nongchanpinClicknum != ''">
+                and a.nongchanpin_clicknum = #{params.nongchanpinClicknum}
+             </if>
+            <if test=" params.nongchanpinContent != '' and params.nongchanpinContent != null and params.nongchanpinContent != 'null' ">
+                and a.nongchanpin_content like CONCAT('%',#{params.nongchanpinContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.nongchanpinDeleteStart != null and params.nongchanpinDeleteStart != ''">
+                <![CDATA[  and a.nongchanpin_delete >= #{params.nongchanpinDeleteStart}   ]]>
+            </if>
+            <if test="params.nongchanpinDeleteEnd != null and params.nongchanpinDeleteEnd != ''">
+                <![CDATA[  and a.nongchanpin_delete <= #{params.nongchanpinDeleteEnd}   ]]>
+            </if>
+             <if test="params.nongchanpinDelete != null and params.nongchanpinDelete != ''">
+                and a.nongchanpin_delete = #{params.nongchanpinDelete}
+             </if>
+
+                <!-- 判断商家的id不为空 -->
+            <if test=" params.shangjiaIdNotNull != '' and params.shangjiaIdNotNull != null and params.shangjiaIdNotNull != 'null' ">
+                and a.shangjia_id IS NOT NULL
+            </if>
+            <if test=" params.shangjiaName != '' and params.shangjiaName != null and params.shangjiaName != 'null' ">
+                and shangjia.shangjia_name like CONCAT('%',#{params.shangjiaName},'%')
+            </if>
+            <if test=" params.shangjiaPhone != '' and params.shangjiaPhone != null and params.shangjiaPhone != 'null' ">
+                and shangjia.shangjia_phone like CONCAT('%',#{params.shangjiaPhone},'%')
+            </if>
+            <if test=" params.shangjiaEmail != '' and params.shangjiaEmail != null and params.shangjiaEmail != 'null' ">
+                and shangjia.shangjia_email like CONCAT('%',#{params.shangjiaEmail},'%')
+            </if>
+            <if test="params.shangjiaXingjiTypes != null  and params.shangjiaXingjiTypes != ''">
+                and shangjia.shangjia_xingji_types = #{params.shangjiaXingjiTypes}
+            </if>
+
+            <if test="params.newMoneyStart != null ">
+                <![CDATA[  and shangjia.new_money >= #{params.newMoneyStart}   ]]>
+            </if>
+            <if test="params.newMoneyEnd != null ">
+                <![CDATA[  and shangjia.new_money <= #{params.newMoneyEnd}   ]]>
+            </if>
+            <if test="params.newMoney != null and params.newMoney != ''">
+                and a.new_money = #{params.newMoney}
+            </if>
+            <if test=" params.shangjiaContent != '' and params.shangjiaContent != null and params.shangjiaContent != 'null' ">
+                and shangjia.shangjia_content like CONCAT('%',#{params.shangjiaContent},'%')
+            </if>
+            <if test="params.shangjiaDeleteStart != null  and params.shangjiaDeleteStart != '' ">
+                <![CDATA[  and shangjia.shangjia_delete >= #{params.shangjiaDeleteStart}   ]]>
+            </if>
+            <if test="params.shangjiaDeleteEnd != null  and params.shangjiaDeleteEnd != '' ">
+                <![CDATA[  and shangjia.shangjia_delete <= #{params.shangjiaDeleteEnd}   ]]>
+            </if>
+            <if test="params.shangjiaDelete != null  and params.shangjiaDelete != '' ">
+                and shangjia.shangjia_delete = #{params.shangjiaDelete}
+            </if>
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>

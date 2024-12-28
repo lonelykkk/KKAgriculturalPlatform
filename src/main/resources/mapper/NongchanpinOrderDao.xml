@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.NongchanpinOrderDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.nongchanpin_order_uuid_number as nongchanpinOrderUuidNumber
+        ,a.address_id as addressId
+        ,a.nongchanpin_id as nongchanpinId
+        ,a.yonghu_id as yonghuId
+        ,a.buy_number as buyNumber
+        ,a.nongchanpin_order_true_price as nongchanpinOrderTruePrice
+        ,a.nongchanpin_order_courier_name as nongchanpinOrderCourierName
+        ,a.nongchanpin_order_courier_number as nongchanpinOrderCourierNumber
+        ,a.nongchanpin_order_types as nongchanpinOrderTypes
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.NongchanpinOrderView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+        ,address.yonghu_id as addressYonghuId
+        ,address.address_name as addressName
+        ,address.address_phone as addressPhone
+        ,address.address_dizhi as addressDizhi
+        ,address.isdefault_types as isdefaultTypes
+        ,nongchanpin.shangjia_id as nongchanpinShangjiaId
+        ,nongchanpin.nongchanpin_name as nongchanpinName
+        ,nongchanpin.nongchanpin_photo as nongchanpinPhoto
+        ,nongchanpin.nongchanpin_types as nongchanpinTypes
+        ,nongchanpin.nongchanpin_kucun_number as nongchanpinKucunNumber
+        ,nongchanpin.nongchanpin_old_money as nongchanpinOldMoney
+        ,nongchanpin.nongchanpin_new_money as nongchanpinNewMoney
+        ,nongchanpin.nongchanpin_clicknum as nongchanpinClicknum
+        ,nongchanpin.nongchanpin_content as nongchanpinContent
+        ,nongchanpin.shangxia_types as shangxiaTypes
+        ,nongchanpin.nongchanpin_delete as nongchanpinDelete
+        ,yonghu.yonghu_uuid_number as yonghuUuidNumber
+        ,yonghu.yonghu_name as yonghuName
+        ,yonghu.yonghu_phone as yonghuPhone
+        ,yonghu.yonghu_id_number as yonghuIdNumber
+        ,yonghu.yonghu_photo as yonghuPhoto
+        ,yonghu.yonghu_email as yonghuEmail
+        ,yonghu.new_money as newMoney
+
+        FROM nongchanpin_order  a
+        left JOIN address address ON a.address_id = address.id
+        left JOIN nongchanpin nongchanpin ON a.nongchanpin_id = nongchanpin.id
+        left JOIN yonghu yonghu ON a.yonghu_id = yonghu.id
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.nongchanpinOrderUuidNumber != '' and params.nongchanpinOrderUuidNumber != null and params.nongchanpinOrderUuidNumber != 'null' ">
+                and a.nongchanpin_order_uuid_number like CONCAT('%',#{params.nongchanpinOrderUuidNumber},'%')
+            </if>
+            <if test="params.addressId != null and params.addressId != ''">
+                and (
+                    a.address_id = #{params.addressId}
+                )
+            </if>
+            <if test="params.nongchanpinId != null and params.nongchanpinId != ''">
+                and (
+                    a.nongchanpin_id = #{params.nongchanpinId}
+                )
+            </if>
+            <if test="params.yonghuId != null and params.yonghuId != ''">
+                and (
+                    a.yonghu_id = #{params.yonghuId}
+                )
+            </if>
+            <if test="params.buyNumberStart != null and params.buyNumberStart != ''">
+                <![CDATA[  and a.buy_number >= #{params.buyNumberStart}   ]]>
+            </if>
+            <if test="params.buyNumberEnd != null and params.buyNumberEnd != ''">
+                <![CDATA[  and a.buy_number <= #{params.buyNumberEnd}   ]]>
+            </if>
+             <if test="params.buyNumber != null and params.buyNumber != ''">
+                and a.buy_number = #{params.buyNumber}
+             </if>
+            <if test="params.nongchanpinOrderTruePriceStart != null ">
+                <![CDATA[  and a.nongchanpin_order_true_price >= #{params.nongchanpinOrderTruePriceStart}   ]]>
+            </if>
+            <if test="params.nongchanpinOrderTruePriceEnd != null ">
+                <![CDATA[  and a.nongchanpin_order_true_price <= #{params.nongchanpinOrderTruePriceEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinOrderTruePrice != null and params.nongchanpinOrderTruePrice != ''">
+                and a.nongchanpin_order_true_price = #{params.nongchanpinOrderTruePrice}
+            </if>
+            <if test=" params.nongchanpinOrderCourierName != '' and params.nongchanpinOrderCourierName != null and params.nongchanpinOrderCourierName != 'null' ">
+                and a.nongchanpin_order_courier_name like CONCAT('%',#{params.nongchanpinOrderCourierName},'%')
+            </if>
+            <if test=" params.nongchanpinOrderCourierNumber != '' and params.nongchanpinOrderCourierNumber != null and params.nongchanpinOrderCourierNumber != 'null' ">
+                and a.nongchanpin_order_courier_number like CONCAT('%',#{params.nongchanpinOrderCourierNumber},'%')
+            </if>
+            <if test="params.nongchanpinOrderTypes != null and params.nongchanpinOrderTypes != ''">
+                and a.nongchanpin_order_types = #{params.nongchanpinOrderTypes}
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+            <if test="params.insertTime != null and params.insertTime != ''">
+                and a.insert_time = #{params.insertTime}
+            </if>
+
+                <!-- 判断收货地址的id不为空 -->
+            <if test=" params.addressIdNotNull != '' and params.addressIdNotNull != null and params.addressIdNotNull != 'null' ">
+                and a.address_id IS NOT NULL
+            </if>
+            <if test=" params.addressName != '' and params.addressName != null and params.addressName != 'null' ">
+                and address.address_name like CONCAT('%',#{params.addressName},'%')
+            </if>
+            <if test=" params.addressPhone != '' and params.addressPhone != null and params.addressPhone != 'null' ">
+                and address.address_phone like CONCAT('%',#{params.addressPhone},'%')
+            </if>
+            <if test=" params.addressDizhi != '' and params.addressDizhi != null and params.addressDizhi != 'null' ">
+                and address.address_dizhi like CONCAT('%',#{params.addressDizhi},'%')
+            </if>
+            <if test="params.isdefaultTypes != null  and params.isdefaultTypes != ''">
+                and address.isdefault_types = #{params.isdefaultTypes}
+            </if>
+
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(address.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(address.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+            <if test="params.insertTime != null and params.insertTime != ''">
+                and a.insert_time = #{params.insertTime}
+            </if>
+            <if test=" params.updateTimeStart != '' and params.updateTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(address.update_time) >= UNIX_TIMESTAMP(#{params.updateTimeStart}) ]]>
+            </if>
+            <if test=" params.updateTimeEnd != '' and params.updateTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(address.update_time) <= UNIX_TIMESTAMP(#{params.updateTimeEnd}) ]]>
+            </if>
+            <if test="params.updateTime != null and params.updateTime != ''">
+                and a.update_time = #{params.updateTime}
+            </if>
+                <!-- 判断农产品的id不为空 -->
+            <if test=" params.nongchanpinIdNotNull != '' and params.nongchanpinIdNotNull != null and params.nongchanpinIdNotNull != 'null' ">
+                and a.nongchanpin_id IS NOT NULL
+            </if>
+            <if test="params.shangjiaId != null  and params.shangjiaId != ''">
+                and nongchanpin.shangjia_id = #{params.shangjiaId}
+            </if>
+            <if test=" params.nongchanpinName != '' and params.nongchanpinName != null and params.nongchanpinName != 'null' ">
+                and nongchanpin.nongchanpin_name like CONCAT('%',#{params.nongchanpinName},'%')
+            </if>
+            <if test="params.nongchanpinTypes != null  and params.nongchanpinTypes != ''">
+                and nongchanpin.nongchanpin_types = #{params.nongchanpinTypes}
+            </if>
+
+            <if test="params.nongchanpinKucunNumberStart != null  and params.nongchanpinKucunNumberStart != '' ">
+                <![CDATA[  and nongchanpin.nongchanpin_kucun_number >= #{params.nongchanpinKucunNumberStart}   ]]>
+            </if>
+            <if test="params.nongchanpinKucunNumberEnd != null  and params.nongchanpinKucunNumberEnd != '' ">
+                <![CDATA[  and nongchanpin.nongchanpin_kucun_number <= #{params.nongchanpinKucunNumberEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinKucunNumber != null  and params.nongchanpinKucunNumber != '' ">
+                and nongchanpin.nongchanpin_kucun_number = #{params.nongchanpinKucunNumber}
+            </if>
+            <if test="params.nongchanpinOldMoneyStart != null ">
+                <![CDATA[  and nongchanpin.nongchanpin_old_money >= #{params.nongchanpinOldMoneyStart}   ]]>
+            </if>
+            <if test="params.nongchanpinOldMoneyEnd != null ">
+                <![CDATA[  and nongchanpin.nongchanpin_old_money <= #{params.nongchanpinOldMoneyEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinOldMoney != null and params.nongchanpinOldMoney != ''">
+                and a.nongchanpin_old_money = #{params.nongchanpinOldMoney}
+            </if>
+            <if test="params.nongchanpinNewMoneyStart != null ">
+                <![CDATA[  and nongchanpin.nongchanpin_new_money >= #{params.nongchanpinNewMoneyStart}   ]]>
+            </if>
+            <if test="params.nongchanpinNewMoneyEnd != null ">
+                <![CDATA[  and nongchanpin.nongchanpin_new_money <= #{params.nongchanpinNewMoneyEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinNewMoney != null and params.nongchanpinNewMoney != ''">
+                and a.nongchanpin_new_money = #{params.nongchanpinNewMoney}
+            </if>
+            <if test="params.nongchanpinClicknumStart != null  and params.nongchanpinClicknumStart != '' ">
+                <![CDATA[  and nongchanpin.nongchanpin_clicknum >= #{params.nongchanpinClicknumStart}   ]]>
+            </if>
+            <if test="params.nongchanpinClicknumEnd != null  and params.nongchanpinClicknumEnd != '' ">
+                <![CDATA[  and nongchanpin.nongchanpin_clicknum <= #{params.nongchanpinClicknumEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinClicknum != null  and params.nongchanpinClicknum != '' ">
+                and nongchanpin.nongchanpin_clicknum = #{params.nongchanpinClicknum}
+            </if>
+            <if test=" params.nongchanpinContent != '' and params.nongchanpinContent != null and params.nongchanpinContent != 'null' ">
+                and nongchanpin.nongchanpin_content like CONCAT('%',#{params.nongchanpinContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null  and params.shangxiaTypes != ''">
+                and nongchanpin.shangxia_types = #{params.shangxiaTypes}
+            </if>
+
+            <if test="params.nongchanpinDeleteStart != null  and params.nongchanpinDeleteStart != '' ">
+                <![CDATA[  and nongchanpin.nongchanpin_delete >= #{params.nongchanpinDeleteStart}   ]]>
+            </if>
+            <if test="params.nongchanpinDeleteEnd != null  and params.nongchanpinDeleteEnd != '' ">
+                <![CDATA[  and nongchanpin.nongchanpin_delete <= #{params.nongchanpinDeleteEnd}   ]]>
+            </if>
+            <if test="params.nongchanpinDelete != null  and params.nongchanpinDelete != '' ">
+                and nongchanpin.nongchanpin_delete = #{params.nongchanpinDelete}
+            </if>
+                <!-- 判断用户的id不为空 -->
+            <if test=" params.yonghuIdNotNull != '' and params.yonghuIdNotNull != null and params.yonghuIdNotNull != 'null' ">
+                and a.yonghu_id IS NOT NULL
+            </if>
+            <if test=" params.yonghuUuidNumber != '' and params.yonghuUuidNumber != null and params.yonghuUuidNumber != 'null' ">
+                and yonghu.yonghu_uuid_number like CONCAT('%',#{params.yonghuUuidNumber},'%')
+            </if>
+            <if test=" params.yonghuName != '' and params.yonghuName != null and params.yonghuName != 'null' ">
+                and yonghu.yonghu_name like CONCAT('%',#{params.yonghuName},'%')
+            </if>
+            <if test=" params.yonghuPhone != '' and params.yonghuPhone != null and params.yonghuPhone != 'null' ">
+                and yonghu.yonghu_phone like CONCAT('%',#{params.yonghuPhone},'%')
+            </if>
+            <if test=" params.yonghuIdNumber != '' and params.yonghuIdNumber != null and params.yonghuIdNumber != 'null' ">
+                and yonghu.yonghu_id_number like CONCAT('%',#{params.yonghuIdNumber},'%')
+            </if>
+            <if test=" params.yonghuEmail != '' and params.yonghuEmail != null and params.yonghuEmail != 'null' ">
+                and yonghu.yonghu_email like CONCAT('%',#{params.yonghuEmail},'%')
+            </if>
+            <if test="params.newMoneyStart != null ">
+                <![CDATA[  and yonghu.new_money >= #{params.newMoneyStart}   ]]>
+            </if>
+            <if test="params.newMoneyEnd != null ">
+                <![CDATA[  and yonghu.new_money <= #{params.newMoneyEnd}   ]]>
+            </if>
+            <if test="params.newMoney != null and params.newMoney != ''">
+                and a.new_money = #{params.newMoney}
+            </if>
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
