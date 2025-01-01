@@ -77,12 +77,6 @@ http://localhost:8080/lelenongchanpinxiaoshou/admin/dist/index.html#/login
 
 ​		框架：springboot
 
-前端：vue
-
-​		其他技术：
-
-web+springBoot + redis + mybatis-plus + springscurity
-
 ## 二、 **产品概述** 
 
 ### **1.系统流程**
